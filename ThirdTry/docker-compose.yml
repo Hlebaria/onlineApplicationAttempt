@@ -1,0 +1,26 @@
+version: '3.2'
+services:
+  database:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: tues
+      POSTGRES_USER: alex
+      POSTGRES_PASSWORD: alex
+    ports:
+      - "6543:5432"
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  node_app:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://alex:alex@database:5432/tues
+    depends_on:
+      - database
+
+volumes:
+  database-data:
